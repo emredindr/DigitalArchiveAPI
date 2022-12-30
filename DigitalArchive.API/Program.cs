@@ -3,7 +3,6 @@ using Autofac.Extensions.DependencyInjection;
 using DigitalArchive.Business;
 using DigitalArchive.Business.DependencyResolvers.Autofac;
 using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
-using DigitalArchive.Core.Logging.FileLog;
 using DigitalArchive.Core.Utilities.Security.Encryption;
 using DigitalArchive.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,14 +12,19 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddProvider(new FileLoggerProvider());
+//builder.Logging.AddProvider(new FileLoggerProvider());
 //Bunu AutofacBusinessModule taþý !!!
 builder.Services.AddDependencyResolver();
 //Autofac Dependency ve Aspect Çözümü
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 
-//
+const string corsName = "cors";
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddDbConnectionServices();
 
 builder.Services.AddControllers();
@@ -43,9 +47,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAll",
+//        p => p.AllowAnyOrigin().
+//            AllowAnyHeader().
+//            AllowAnyMethod().
+//            AllowCredentials()
+//            );
+//});
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(corsName,
+        policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            //policy.WithOrigins("http://printramdb.surge.sh/");
+        });
+});
 
 builder.Services.AddSwaggerGen(swagger =>
 {
@@ -101,16 +120,18 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
 app.UseApiResponseAndExceptionWrapper();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(corsName);
 //Burası geliştirilecek Cors için izin verilecek adresler configden oluşturulacak
-app.UseCors(x => x
-           .AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader());
+//app.UseCors(x => x
+//           .AllowAnyOrigin()
+//           .AllowAnyMethod()
+//           .AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

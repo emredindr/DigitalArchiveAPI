@@ -1,4 +1,5 @@
 ﻿using DigitalArchive.Core.Entities;
+using System;
 
 namespace DigitalArchive.Core.DbModels
 {
@@ -8,7 +9,7 @@ namespace DigitalArchive.Core.DbModels
         public string ServiceName { get; set; }
         public string MethodName { get; set; }
         public string Exception { get; set; }
-        public DateTime TimeDuration { get; set; }
+        public DateTimeOffset TimeDuration { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DigitalArchive.Core.Entities.Audit;
+using System;
 
 namespace DigitalArchive.Core.DbModels
 {

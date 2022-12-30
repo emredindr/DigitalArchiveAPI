@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ComplexTypes\" />
+    <Compile Remove="ComplexTypes\**" />
+    <EmbeddedResource Remove="ComplexTypes\**" />
+    <None Remove="ComplexTypes\**" />
   </ItemGroup>
 
   <ItemGroup>

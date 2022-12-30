@@ -32,7 +32,7 @@ namespace DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware
         {
 
             if (IsSwagger(context))
-                await this._next(context);
+                await _next(context);
             else
             {
                 var stopWatch = Stopwatch.StartNew();
