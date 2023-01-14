@@ -5,6 +5,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class EmailController : BaseController
     {
         private readonly IMailSender _mailSender;

@@ -10,7 +10,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
         public void Configure(EntityTypeBuilder<PermissionGroup> builder)
         {
             builder.ToTable("PermissionGroup");
-            builder.Property(c => c.Id);
+            builder.Property(c => c.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(c => c.Name).HasMaxLength(CoreConsts.MaxLength50).IsRequired();
             builder.Property(c => c.Description).HasMaxLength(CoreConsts.MaxLength200);
 

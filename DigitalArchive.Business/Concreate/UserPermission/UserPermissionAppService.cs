@@ -62,6 +62,7 @@ namespace DigitalArchive.Business.Concreate
                 await _userPermissionRepository.RemoveAsync(query.Id);
             }
         }
+        
         public async Task<ListResult<GetPermissionGroupAndPermissionList>> GetPermissionGroupAndPermission(int userId)
         {
             var checkUser = _userRepository.FirstOrDefault(x => !x.IsDeleted && x.Id == userId);
@@ -95,7 +96,7 @@ namespace DigitalArchive.Business.Concreate
             }
             return new ListResult<GetPermissionGroupAndPermissionList>(result);
         }
-
+        
         public async Task<List<Permission>> GetUserPermissions(int userId)
         {
             var result = from permission in _permissionRepository.GetAll()

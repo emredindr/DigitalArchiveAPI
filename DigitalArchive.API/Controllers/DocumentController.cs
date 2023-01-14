@@ -1,4 +1,5 @@
 ﻿using DigitalArchive.Business.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
@@ -7,6 +8,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class DocumentController : BaseController
     {
         private readonly IDocumentAppService _documentAppService;

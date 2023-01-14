@@ -128,7 +128,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Repositories
             var currentUserId = _userManager.GetCurrentUserId();
 
             entity = SetCustomProperty(entity, "IsDeleted", false);
-            entity = SetCustomProperty(entity, "CreationTime", DateTime.Now);
+            entity = SetCustomProperty(entity, "CreationTime", DateTime.UtcNow);
             entity = SetCustomProperty(entity, "CreatorUserId", currentUserId);
 
             return entity;
@@ -137,7 +137,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Repositories
         {
             var currentUserId = _userManager.GetCurrentUserId();
 
-            entity = SetCustomProperty(entity, "LastModificationTime", DateTime.Now);
+            entity = SetCustomProperty(entity, "LastModificationTime", DateTime.UtcNow);
             entity = SetCustomProperty(entity, "LastModifierUserId", currentUserId);
 
             return entity;
@@ -147,7 +147,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Repositories
             var currentUserId = _userManager.GetCurrentUserId();
 
             entity = SetCustomProperty(entity, "IsDeleted", true);
-            entity = SetCustomProperty(entity, "DeletionTime", DateTime.Now);
+            entity = SetCustomProperty(entity, "DeletionTime", DateTime.UtcNow);
             entity = SetCustomProperty(entity, "DeletorUserId", currentUserId);
 
             return entity;

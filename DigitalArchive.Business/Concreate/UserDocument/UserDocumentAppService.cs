@@ -35,6 +35,7 @@ namespace DigitalArchive.Business.Concreate
             _categoryRepository = categoryRepository;
             _categoryTypeRepository = categoryTypeRepository;
         }
+        
         [AuthorizeAspect(new string[] { AllPermissions.UserDocument_List })]
         public async Task<PagedResult<GetAllUserDocumentInfo>> GetAllUserDocumentByPage(GetAllUserDocumentInput input)
         {
@@ -71,8 +72,7 @@ namespace DigitalArchive.Business.Concreate
 
             return new PagedResult<GetAllUserDocumentInfo>(totalCategoryCount, categories);
         }
-
-
+        
         public async Task<GetAllUserDocumentInfo> GetUserDocumentById(int userDocumentId)
         {
             var query = from userDocument in _userDocumentRepository.GetAll()
@@ -157,9 +157,7 @@ namespace DigitalArchive.Business.Concreate
 
             await _userRepository.DeleteAsync(checkUserDocument.Id);
         }
-
-
-
+        
         private async Task<List<int>> GetParentCategoryIds(int? categoryId)
         {
             List<int> categoryIds = new List<int>();
@@ -189,7 +187,6 @@ namespace DigitalArchive.Business.Concreate
 
             return categoryIds;
         }
-
         private async Task<List<Category>> GetChildCategories(int categoryId)
         {
             return await _categoryRepository.GetAll().Where(x => !x.IsDeleted && x.ParentCategoryId == categoryId).ToListAsync();

@@ -20,6 +20,7 @@ namespace DigitalArchive.Business.Concreate
         {
             _permissionGroupRepository = permissionGroupRepository;
         }
+        
         [AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
         public async Task<PagedResult<GetAllPermissionGroupInfo>> GetAllPermissionGroupByPage(GetAllPermissionGroupInput input)
         {
@@ -47,6 +48,7 @@ namespace DigitalArchive.Business.Concreate
             return mappedCategory;
         }
 
+        [AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
         public async Task<ListResult<GetAllPermissionGroupInfo>> GetPermissionGroupList()
         {
             var query = await _permissionGroupRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();

@@ -14,7 +14,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
         public void Configure(EntityTypeBuilder<UserPermission> builder)
         {
             builder.ToTable("UserPermission");
-            builder.Property(x => x.Id);
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
         }
     }
 }

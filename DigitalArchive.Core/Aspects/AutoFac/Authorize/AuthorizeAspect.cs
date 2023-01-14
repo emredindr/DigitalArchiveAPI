@@ -17,7 +17,7 @@ namespace DigitalArchive.Core.Aspects.AutoFac.Authorize
         {
             var _httpContext = new HttpContextAccessor().HttpContext;
             var identity = _httpContext.User.Identity as ClaimsIdentity;
-            var userPermissions = identity.FindAll(ClaimTypes.Role).Select(x => x.Value);
+            var userPermissions = identity.FindAll(ClaimTypes.Role).Select(x => x.Value.ToString());
 
             foreach (var permission in _permissions)
                 if (userPermissions.Contains(permission))

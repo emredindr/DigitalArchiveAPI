@@ -10,7 +10,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
         public void Configure(EntityTypeBuilder<CategoryType> builder)
         {
             builder.ToTable("CategoryType");
-            builder.Property(c => c.Id);
+            builder.Property(c => c.Id).ValueGeneratedOnAdd(); 
             builder.Property(b => b.Name).HasMaxLength(CoreConsts.MaxLength50);
             builder.Property(b => b.Description).HasMaxLength(CoreConsts.MaxLength200);
 

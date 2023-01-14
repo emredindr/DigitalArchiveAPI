@@ -1,12 +1,15 @@
 ﻿using DigitalArchive.Business.Abstract;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.CategoryTypeVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class CategoryTypeController : BaseController
     {
         private readonly ICategoryTypeAppService _categoryTypeAppService;

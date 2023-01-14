@@ -3,6 +3,7 @@ using DigitalArchive.Business.ValidationRules.FluentValidation.PermissionGroup;
 using DigitalArchive.Core.Aspects.AutoFac.Validation;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.PermissionGroupVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,8 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class PermissionGroupController : BaseController
     {
         private readonly IPermissionGroupAppService _permissionGroupAppService;

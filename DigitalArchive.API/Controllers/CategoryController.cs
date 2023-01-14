@@ -1,19 +1,19 @@
 ﻿using DigitalArchive.Business.Abstract;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.CategoryVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class CategoryController : BaseController
     {
         private readonly ICategoryAppService _categoryAppService;
-        public CategoryController
-            (
-            ICategoryAppService categoryAppService
-            )
+        public CategoryController(ICategoryAppService categoryAppService)
         {
             _categoryAppService = categoryAppService;
         }
@@ -30,7 +30,7 @@ namespace DigitalArchive.API.Controllers
         }
 
         [HttpGet("GetAllCategoryByPage")]
-        public async Task<PagedResult<GetAllCategoryInfo>> GetAllCategoryByPage([FromQuery]GetAllCategoryInput input)
+        public async Task<PagedResult<GetAllCategoryInfo>> GetAllCategoryByPage([FromQuery] GetAllCategoryInput input)
         {
             return await _categoryAppService.GetAllCategoryByPage(input);
         }

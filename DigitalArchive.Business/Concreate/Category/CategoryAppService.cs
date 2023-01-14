@@ -37,6 +37,8 @@ namespace DigitalArchive.Business.Concreate
             var mappedCategoryList = Mapper.Map<List<GetAllCategoryInfo>>(await query.ToListAsync());
             return new ListResult<GetAllCategoryInfo>(mappedCategoryList);
         }
+
+
         public async Task<GetAllCategoryInfo> GetCategoryById(int categoryId)
         {
             var category = await _categoryRepository.FirstOrDefaultAsync(x => x.Id == categoryId && !x.IsDeleted);
@@ -103,7 +105,7 @@ namespace DigitalArchive.Business.Concreate
             {
                 if (category.Id != checkCategory.Id)
                 {
-                    throw new Exception("Aynı isimle aktif permission oldugu icin guncellenemedi. ");
+                    throw new Exception("Aynı isimle aktif categori oldugu icin guncellenemedi. ");
                 }
             }
             //checkUser.Name = updateUserInput.Name;

@@ -165,7 +165,5 @@ namespace DigitalArchive.Business.Concreate
 
             await _userRepository.DeleteAsync(checkUser.Id);
         }
-
-       
     }
 }

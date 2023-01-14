@@ -21,6 +21,7 @@ namespace DigitalArchive.DataAccess.Migrations
                     MethodName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Exception = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     TimeDuration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    
                 },
                 constraints: table =>
                 {

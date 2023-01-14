@@ -1,12 +1,15 @@
 ﻿using DigitalArchive.Business.Abstract;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.UserDocumentVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class UserDocumentController : BaseController
     {
         private readonly IUserDocumentAppService _userDocumentAppService;

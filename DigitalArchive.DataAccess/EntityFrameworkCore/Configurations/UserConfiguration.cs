@@ -10,11 +10,10 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("User");
-            builder.Property(b => b.Id);
+            builder.Property(b => b.Id).IsRequired().ValueGeneratedOnAdd();
             builder.Property(b => b.Name).HasMaxLength(CoreConsts.MaxLength50).IsRequired();
             builder.Property(b => b.Surname).HasMaxLength(CoreConsts.MaxLength50);
             builder.Property(b => b.UserName).HasMaxLength(CoreConsts.MaxLength50);
-            builder.Property(b => b.Email).HasMaxLength(CoreConsts.MaxLength50);
 
         }
     }

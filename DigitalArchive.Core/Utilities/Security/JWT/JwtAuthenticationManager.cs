@@ -20,7 +20,7 @@ namespace DigitalArchive.Core.Utilities.Security.JWT
         }
         public AccessToken CreateToken(User user, List<Permission> operationClaims)
         {
-            _accessTokenExpiration = DateTime.Now.AddMinutes(_jwtConfiguration.AccessTokenExpiration);
+            _accessTokenExpiration = DateTime.UtcNow.AddMinutes(_jwtConfiguration.AccessTokenExpiration);
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_jwtConfiguration.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
             var jwt = CreateJwtSecurityToken(_jwtConfiguration, user, signingCredentials, operationClaims);
@@ -41,7 +41,7 @@ namespace DigitalArchive.Core.Utilities.Security.JWT
                 jwtConfiguration.Issuer,
                 jwtConfiguration.Audience,
                 expires: _accessTokenExpiration,
-                notBefore: DateTime.Now,
+                notBefore: DateTime.UtcNow,
                 claims: SetClaims(user, operationClaims),
                 signingCredentials: signingCredentials
             );

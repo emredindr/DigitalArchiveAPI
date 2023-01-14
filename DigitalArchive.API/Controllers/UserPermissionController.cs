@@ -1,6 +1,7 @@
 ﻿using DigitalArchive.Business.Abstract;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.UserPermissionVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class UserPermissionController : ControllerBase
     {
         private readonly IUserPermissionAppService _userPermissionAppService;

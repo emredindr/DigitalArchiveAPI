@@ -17,6 +17,8 @@ namespace DigitalArchive.Business.Concreate
         {
             _categoryTypeRepository = categoryTypeRepository;
         }
+
+        [AuthorizeAspect(new string[] { AllPermissions.CategoryType_List })]
         public async Task<ListResult<GetAllCategoryTypeInfo>> GetCategoryTypeList()
         {
             var query = await _categoryTypeRepository.GetAll().Where(x=>!x.IsDeleted).ToListAsync();
@@ -25,7 +27,7 @@ namespace DigitalArchive.Business.Concreate
 
             return new ListResult<GetAllCategoryTypeInfo>(newCategoryTypes);
         }
-
+        
         [AuthorizeAspect(new string[] { AllPermissions.CategoryType_List })]
         public async Task<PagedResult<GetAllCategoryTypeInfo>> GetAllCategoryTypeByPage(GetAllCategoryTypeInput input)
         {
@@ -41,7 +43,6 @@ namespace DigitalArchive.Business.Concreate
 
             return new PagedResult<GetAllCategoryTypeInfo>(totalCategoryTypeCount, newCategoryTypes);
         }
-
 
         [AuthorizeAspect(new string[] { AllPermissions.CategoryType_Create })]
         public async Task CreateCategoryType(CreateCategoryTypeInput input)

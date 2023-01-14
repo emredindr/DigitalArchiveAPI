@@ -25,6 +25,7 @@ namespace DigitalArchive.Business.Concreate
             _permissionRepository = permissionRepository;
             _permissionGroupRepository = permissionGroupRepository;
         }
+        
         [AuthorizeAspect(new string[] { AllPermissions.Permission_List })]
         public async Task<PagedResult<GetAllPermissionInfo>> GetAllPermissionByPage(GetAllPermissionInput input)
         {
@@ -50,13 +51,17 @@ namespace DigitalArchive.Business.Concreate
             return new PagedResult<GetAllPermissionInfo>(totalPermissionCount, permissions);
 
         }
+
+        [AuthorizeAspect(new string[] { AllPermissions.Permission_List })]
         public async Task<ListResult<GetAllPermissionInfo>> GetPermissionList()
         {
             var query =await _permissionRepository.GetAll().Where(x=>!x.IsDeleted).ToListAsync();
+            
             var mappedPermissions = Mapper.Map<List<GetAllPermissionInfo>>(query);
 
             return new ListResult<GetAllPermissionInfo>(mappedPermissions);
         }
+
         public async Task<GetAllPermissionInfo> GetPermissionById(int permissionId)
         {
             var permission = await _permissionRepository.FirstOrDefaultAsync(x => x.Id == permissionId && !x.IsDeleted);
@@ -81,6 +86,7 @@ namespace DigitalArchive.Business.Concreate
             var newPermission = Mapper.Map<Permission>(input);
             await _permissionRepository.InsertAsync(newPermission);
         }
+        
         [AuthorizeAspect(new string[] { AllPermissions.Permission_Update })]
         [ValidationAspect(typeof(UpdatePermissionInputValidator))]
         public async Task UpdatePermission(UpdatePermissionInput input)
