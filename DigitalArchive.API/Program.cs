@@ -19,7 +19,7 @@ builder.Services.AddDependencyResolver();
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(builder => builder.RegisterModule(new AutofacBusinessModule()));
 
-const string corsName = "cors";
+//const string corsName = "cors";
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -56,15 +56,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //            AllowCredentials()
 //            );
 //});
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy(corsName,
-        policy =>
-        {
-            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            policy.WithOrigins("http://printramdb.surge.sh/");
-        });
-});
+//builder.Services.AddCors(opt =>
+//{
+//    opt.AddPolicy(corsName,
+//        policy =>
+//        {
+//            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+//        });
+//});
 
 builder.Services.AddSwaggerGen(swagger =>
 {
@@ -126,12 +125,10 @@ app.UseApiResponseAndExceptionWrapper();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(corsName);
+//app.UseCors(corsName);
+
 //Burası geliştirilecek Cors için izin verilecek adresler configden oluşturulacak
-//app.UseCors(x => x
-//           .AllowAnyOrigin()
-//           .AllowAnyMethod()
-//           .AllowAnyHeader());
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
