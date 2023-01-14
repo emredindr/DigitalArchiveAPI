@@ -152,7 +152,6 @@ namespace DigitalArchive.Business.Concreate
             await _userRepository.UpdateAsync(checkUser);
         }
 
-
         [AuthorizeAspect(new string[] { AllPermissions.Administration_User_Delete })]
         public async Task DeleteUser(int userId)
         {

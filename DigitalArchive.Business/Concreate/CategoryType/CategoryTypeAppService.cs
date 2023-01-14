@@ -31,7 +31,7 @@ namespace DigitalArchive.Business.Concreate
         [AuthorizeAspect(new string[] { AllPermissions.CategoryType_List })]
         public async Task<PagedResult<GetAllCategoryTypeInfo>> GetAllCategoryTypeByPage(GetAllCategoryTypeInput input)
         {
-            var query = _categoryTypeRepository.GetAll();
+            var query = _categoryTypeRepository.GetAll().Where(x => !x.IsDeleted);
 
             query = query.WhereIf(!string.IsNullOrEmpty(input.SearchText), x => x.Name.Contains(input.SearchText));
 
