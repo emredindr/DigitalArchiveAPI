@@ -1,8 +1,6 @@
 ﻿using DigitalArchive.Business.Abstract;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.UserPermissionVM;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalArchive.API.Controllers
@@ -23,6 +21,7 @@ namespace DigitalArchive.API.Controllers
         {
             return await _userPermissionAppService.GetPermissionGroupAndPermission(userId);
         }
+
         [HttpPost("CreateOrUpdateUserPermission")]
         public async Task CreateOrUpdateUserPermission(CreateOrUpdateUserPermissionInput input)
         {

@@ -14,7 +14,8 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
             builder.Property(b => b.Name).HasMaxLength(CoreConsts.MaxLength50).IsRequired();
             builder.Property(b => b.Surname).HasMaxLength(CoreConsts.MaxLength50);
             builder.Property(b => b.UserName).HasMaxLength(CoreConsts.MaxLength50);
-
+            builder.Property(b => b.Email).HasMaxLength(CoreConsts.MaxLength50).IsRequired();
+            builder.Property(b => b.Password).HasMaxLength(CoreConsts.MaxLength50).IsRequired();
         }
     }
 }

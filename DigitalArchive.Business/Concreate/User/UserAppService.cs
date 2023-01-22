@@ -44,7 +44,9 @@ namespace DigitalArchive.Business.Concreate
             if (userCheck == null)
                 throw new Exception($"{input.Email} mail adresine eş kayıt bulunamadı");
 
-            //Parola kontrolü yapılacak
+            if (userCheck.Password != input.Password)
+                throw new Exception("Hatalı parola");
+
             var userPermissionList = await _userPermissionAppService.GetUserPermissions(userCheck.Id);
 
             var accessToken = _jwtAuthenticationManager.CreateToken(userCheck, userPermissionList);
@@ -54,7 +56,7 @@ namespace DigitalArchive.Business.Concreate
             return mappedItem;
         }
 
-        
+
         public async Task<GetAllUserInfo> GetUserById(int userId)
         {
             var user = await _userRepository.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == userId);
@@ -124,8 +126,8 @@ namespace DigitalArchive.Business.Concreate
             #endregion
             return new PagedResult<GetAllUserInfo>(totalUserCount, newUsers);
         }
-        
-        
+
+
         [AuthorizeAspect(new string[] { AllPermissions.Administration_User_Create })]
         [ValidationAspect(typeof(CreateUserInputValidator))]
         public async Task CreateUser(CreateUserInput createUserInput)
@@ -140,7 +142,7 @@ namespace DigitalArchive.Business.Concreate
         [ValidationAspect(typeof(UpdateUserInputValidator))]
         public async Task UpdateUser(UpdateUserInput updateUserInput)
         {
-            
+
             var checkUser = await _userRepository.GetAsync(updateUserInput.Id);
             if (checkUser == null)
             {
