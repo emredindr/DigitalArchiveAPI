@@ -45,8 +45,5 @@ namespace DigitalArchive.API.Controllers
         {
             await _userDocumentAppService.DeleteUserDocument(userDocumentId);
         }
-
-
-
     }
 }

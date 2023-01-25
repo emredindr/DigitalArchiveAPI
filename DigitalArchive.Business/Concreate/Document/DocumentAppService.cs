@@ -14,7 +14,7 @@ namespace DigitalArchive.Business.Concreate
 
         public async Task<int> CreateAndGetDocumentId(string fileName, string contentType)
         {
-            return await _documentrepository.InsertAndGetIdAsync(new Document() { Name = fileName, ContentType = contentType });
+            return await _documentrepository.InsertAndGetIdAsync(new Document() { Name = fileName, ContentType = contentType,CreationTime=DateTime.UtcNow});
         }
     }
 }
