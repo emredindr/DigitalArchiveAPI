@@ -59,7 +59,8 @@ namespace DigitalArchive.API.Controllers
         public async Task<IActionResult> UploadDocumentToAzure()
        {
             BlobContainerClient container = new (_storageConnectionString, _storageContainerName);
-
+            Random random = new Random();
+            var asd = random.Next(101, 1000);
             try
             {
                 //var formCollection = await Request.ReadFormAsync();
@@ -77,7 +78,7 @@ namespace DigitalArchive.API.Controllers
 
                 string result = file.FileName.Substring(0, file.FileName.Length - fileExtension.Length);
 
-                string fileName = result + "-" + DateTime.UtcNow.ToString();
+                string fileName = result + "-" + asd.ToString();
 
 
                 string newFileName = string.Join(string.Empty, fileName, fileExtension);

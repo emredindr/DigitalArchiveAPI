@@ -161,14 +161,14 @@ namespace DigitalArchive.Business.Concreate
         [AuthorizeAspect(new string[] { AllPermissions.UserDocument_Delete })]
         public async Task DeleteUserDocument(int userDocumentId)
         {
-            var checkUserDocument = await _userRepository.GetAsync(userDocumentId);
+            var checkUserDocument = await _userDocumentRepository.GetAsync(userDocumentId);
             if (checkUserDocument == null)
             {
                 throw new Exception($"{userDocumentId} nolu Id degeri bulunamadı");
             }
             checkUserDocument.IsDeleted = true;
 
-            await _userRepository.DeleteAsync(checkUserDocument.Id);
+            await _userDocumentRepository.DeleteAsync(checkUserDocument.Id);
         }
         
         private async Task<List<int>> GetParentCategoryIds(int? categoryId)
