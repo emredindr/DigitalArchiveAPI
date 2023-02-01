@@ -31,6 +31,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddCors();
 //jwt Configuration
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -122,13 +123,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseApiResponseAndExceptionWrapper();
 
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 //app.UseCors(corsName);
 
 //Burası geliştirilecek Cors için izin verilecek adresler configden oluşturulacak
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+//app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 

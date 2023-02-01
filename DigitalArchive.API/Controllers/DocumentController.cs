@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 
 namespace DigitalArchive.API.Controllers
 {
+    //[Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
 
@@ -40,8 +41,8 @@ namespace DigitalArchive.API.Controllers
                 {
                     file.CopyTo(stream);
                 }
-                var recordDocumentId =await _documentAppService.CreateAndGetDocumentId(fileName, file.ContentType);
-                
+                var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(fileName, file.ContentType);
+
                 return Ok(new UploadedDocumentInfo
                 {
                     DocumentId = recordDocumentId,
@@ -53,37 +54,41 @@ namespace DigitalArchive.API.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        
+
         [HttpPost("UploadDocumentToAzure")]
-        public async Task<IActionResult> UploadDocumentToAzure(IFormFile file)
+        public async Task<IActionResult> UploadDocumentToAzure()
        {
             BlobContainerClient container = new (_storageConnectionString, _storageContainerName);
 
             try
             {
-                //var file = Request.Form.Files[0];
+                //var formCollection = await Request.ReadFormAsync();
+                
+                //var file = formCollection.Files[0];
+                
+                var file = Request.Form.Files[0];
 
                 if (file == null)
                 {
                     return BadRequest();
                 }
-                
+
                 string fileExtension = Path.GetExtension(file.FileName);
 
                 string result = file.FileName.Substring(0, file.FileName.Length - fileExtension.Length);
 
-                string fileName = result +"-"+ DateTime.UtcNow.ToString(); 
+                string fileName = result + "-" + DateTime.UtcNow.ToString();
 
 
-                string newFileName = string.Join(string.Empty,fileName,fileExtension);
-               
+                string newFileName = string.Join(string.Empty, fileName, fileExtension);
+
                 // Get a reference to the blob just uploaded from the API in a container from configuration settings
                 BlobClient blob = container.GetBlobClient(newFileName);
 
                 await blob.UploadAsync(file.OpenReadStream());
 
                 var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType);
-                
+
                 return Ok(new UploadedDocumentInfo
                 {
                     DocumentId = recordDocumentId,
