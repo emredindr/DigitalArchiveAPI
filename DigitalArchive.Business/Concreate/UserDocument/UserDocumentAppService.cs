@@ -19,7 +19,8 @@ namespace DigitalArchive.Business.Concreate
         private readonly IRepository<Document, int> _documentRepository;
         private readonly IRepository<Category, int> _categoryRepository;
         private readonly IRepository<CategoryType, int> _categoryTypeRepository;
-
+        private readonly IUserManager _userManager;
+        private readonly IUserCategoryAppService _userCategoryAppService;
         public UserDocumentAppService
             (
             IRepository<UserDocument, int> userDocumentRepository,
@@ -27,18 +28,30 @@ namespace DigitalArchive.Business.Concreate
             IRepository<Document, int> documentRepository,
             IRepository<Category, int> categoryRepository,
             IRepository<CategoryType, int> categoryTypeRepository
-            )
+,
+            IUserCategoryAppService userCategoryAppService,
+            IUserManager userManager)
         {
             _userDocumentRepository = userDocumentRepository;
             _userRepository = userRepository;
             _documentRepository = documentRepository;
             _categoryRepository = categoryRepository;
             _categoryTypeRepository = categoryTypeRepository;
+            _userCategoryAppService = userCategoryAppService;
+            _userManager = userManager;
         }
-        
+
         [AuthorizeAspect(new string[] { AllPermissions.UserDocument_List })]
         public async Task<PagedResult<GetAllUserDocumentInfo>> GetAllUserDocumentByPage(GetAllUserDocumentInput input)
         {
+            var currentUserId = _userManager.GetCurrentUserId();
+            var categoryPermissionCheck = await _userCategoryAppService.GetUserCategories(currentUserId, input.CategoryId ?? 0);
+
+            if (categoryPermissionCheck == null)
+            {
+                throw new Exception("bu kategoriyi görme yetkiniz yoktur.");
+            }
+
             var categoryIds = await GetParentCategoryIds(input.CategoryId);
 
             var query = from userDocument in _userDocumentRepository.GetAll()
@@ -66,7 +79,7 @@ namespace DigitalArchive.Business.Concreate
                     DocumentCategoryType = Mapper.Map<DocumentCategoryTypeInfo>(x.categoryType),
                     DocumentTitle = x.userDocument.DocumentTitle,
                     CreationTime = x.userDocument.CreationTime,
-                    UserDocumentId = x.userDocument.DocumentId,
+                    UserDocumentId = x.userDocument.Id,
 
                 }).ToListAsync();
 

@@ -50,6 +50,7 @@ namespace DigitalArchive.Business.Mappings.AutoMapper.Profiles
             CreateMap<PermissionGroup, CreatePermissionGroupInput>().ReverseMap();
             CreateMap<PermissionGroup, UpdatePermissionGroupInput>().ReverseMap();
 
+            //UserCategory
 
            
         }

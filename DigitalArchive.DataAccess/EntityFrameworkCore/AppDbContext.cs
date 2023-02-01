@@ -17,7 +17,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore
         public DbSet<UserPermission> UserPermissions { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<PermissionGroup> PermissionGroups { get; set; }
-
+        public DbSet<UserCategory> UserCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore
             modelBuilder.ApplyConfiguration(new UserPermissionConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentConfiguration());
             modelBuilder.ApplyConfiguration(new PermissionGroupConfiguration());
+            modelBuilder.ApplyConfiguration(new UserCategoryConfiguration());
 
         }
     }

@@ -129,7 +129,7 @@ app.UseAuthorization();
 
 //Burası geliştirilecek Cors için izin verilecek adresler configden oluşturulacak
 
-//app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
