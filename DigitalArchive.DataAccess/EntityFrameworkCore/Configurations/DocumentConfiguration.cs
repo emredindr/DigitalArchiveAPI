@@ -12,6 +12,7 @@ namespace DigitalArchive.DataAccess.EntityFrameworkCore.Configurations
             builder.ToTable("Document");
             builder.Property(b => b.Name).HasMaxLength(CoreConsts.MaxLength100);
             builder.Property(b => b.ContentType).HasMaxLength(CoreConsts.MaxLength100);
+            builder.Property(b => b.DownloadUrl).HasMaxLength(CoreConsts.MaxLength300);
 
         }
     }

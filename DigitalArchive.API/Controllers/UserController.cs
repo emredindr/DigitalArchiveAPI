@@ -59,12 +59,5 @@ namespace DigitalArchive.API.Controllers
         {
             await _userAppService.DeleteUser(id);
         }
-        //[HttpPost(Name = "GetUser")]
-        //public UserLoginOutput UserRequest(UserLoginInput input)
-        //{
-        //    var asd = _userAppService.Login(input);
-
-        //    return new UserLoginOutput { Id = asd.Id, UserName = asd.UserName, Token = asd.AccessToken }; ;
-        //}
     }
 }

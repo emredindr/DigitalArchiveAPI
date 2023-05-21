@@ -14,7 +14,12 @@ namespace DigitalArchive.Business.Concreate
 
         public async Task<int> CreateAndGetDocumentId(string fileName, string contentType)
         {
-            return await _documentrepository.InsertAndGetIdAsync(new Document() { Name = fileName, ContentType = contentType,CreationTime=DateTime.UtcNow});
+            return await _documentrepository.InsertAndGetIdAsync(new Document() { Name = fileName, ContentType = contentType, CreationTime = DateTime.UtcNow });
+        }
+        public async Task<int> CreateAndGetDocumentId(string fileName, string contentType, string downloadUrl)
+        {
+            var asd = await _documentrepository.InsertAndGetIdAsync(new Document() { Name = fileName, ContentType = contentType, DownloadUrl = downloadUrl, CreationTime = DateTime.UtcNow });
+            return asd;
         }
     }
 }

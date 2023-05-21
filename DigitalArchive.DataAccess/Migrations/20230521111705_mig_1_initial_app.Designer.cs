@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DigitalArchive.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230415183718_mig_1_initial")]
-    partial class mig_1_initial
+    [Migration("20230521111705_mig_1_initial_app")]
+    partial class mig_1_initial_app
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

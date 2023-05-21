@@ -2,6 +2,7 @@
 using DigitalArchive.Business.Abstract;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 
@@ -134,12 +135,15 @@ namespace DigitalArchive.API.Controllers
                     ThrowOnCancel = true
                 }).Child("archive").Child(newFileName).PutAsync(stream);
 
-                var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType);
+                var downloadUrl = await task;
+
+                var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType, downloadUrl.ToString());
 
                 return Ok(new UploadedDocumentInfo
                 {
                     DocumentId = recordDocumentId,
                     DocumentName = newFileName,
+                    DocumentDownloadUrl = downloadUrl
                 });
             }
             catch (Exception ex)
@@ -151,6 +155,7 @@ namespace DigitalArchive.API.Controllers
         {
             public int DocumentId { get; set; }
             public string DocumentName { get; set; }
+            public string DocumentDownloadUrl { get; set; }
         }
     }
 }

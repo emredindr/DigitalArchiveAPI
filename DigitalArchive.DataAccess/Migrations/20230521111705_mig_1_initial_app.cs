@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DigitalArchive.DataAccess.Migrations
 {
-    public partial class mig_1_initial : Migration
+    public partial class mig_1_initial_app : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
