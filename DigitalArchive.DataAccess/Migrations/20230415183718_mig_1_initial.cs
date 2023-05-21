@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DigitalArchive.DataAccess.Migrations
 {
-    public partial class mig_1 : Migration
+    public partial class mig_1_initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,8 +20,7 @@ namespace DigitalArchive.DataAccess.Migrations
                     ServiceName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     MethodName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Exception = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    TimeDuration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                    
+                    TimeDuration = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,7 +92,7 @@ namespace DigitalArchive.DataAccess.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     PermissionGroupId = table.Column<int>(type: "integer", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
@@ -133,8 +132,9 @@ namespace DigitalArchive.DataAccess.Migrations
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     UserName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    BirthDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatorUserId = table.Column<int>(type: "integer", nullable: true),
                     CreationTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -147,6 +147,20 @@ namespace DigitalArchive.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserCategory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCategory", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +223,9 @@ namespace DigitalArchive.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "UserCategory");
 
             migrationBuilder.DropTable(
                 name: "UserDocument");

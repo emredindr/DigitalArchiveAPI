@@ -7,6 +7,7 @@ using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
 using DigitalArchive.Core.Repositories;
+using DigitalArchive.Entities.ViewModels.CategoryVM;
 using DigitalArchive.Entities.ViewModels.PermissionVM;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +40,7 @@ namespace DigitalArchive.Business.Concreate
                             Name = permission.Name,
                             Description = permission.Description,
                             PermissionGroupId = permissionGroup.Id,
-                            PermissionGroupName = permissionGroup.Name
+                            PermissionGroupName = permissionGroup.Name,
                         };
 
             query = query.WhereIf(!string.IsNullOrEmpty(input.SearchText), x => x.Name.Contains(input.SearchText));
@@ -55,9 +56,23 @@ namespace DigitalArchive.Business.Concreate
         [AuthorizeAspect(new string[] { AllPermissions.Permission_List })]
         public async Task<ListResult<GetAllPermissionInfo>> GetPermissionList()
         {
-            var query =await _permissionRepository.GetAll().Where(x=>!x.IsDeleted).ToListAsync();
-            
-            var mappedPermissions = Mapper.Map<List<GetAllPermissionInfo>>(query);
+            //var query =await _permissionRepository.GetAll().Where(x=>!x.IsDeleted).ToListAsync();
+            var query = from permission in _permissionRepository.GetAll()
+                        join permissionGroup in _permissionGroupRepository.GetAll()
+                        on permission.PermissionGroupId equals permissionGroup.Id
+                        where !permission.IsDeleted && !permissionGroup.IsDeleted
+                        select new GetAllPermissionInfo
+                        {
+                            Id = permission.Id,
+                            Name = permission.Name,
+                            Description = permission.Description,
+                            PermissionGroupId = permissionGroup.Id,
+                            PermissionGroupName = permissionGroup.Name,
+                            PermissionGroupDescription = permissionGroup.Description,
+                        };
+
+            var permissions =await query.ToListAsync();
+            var mappedPermissions = Mapper.Map<List<GetAllPermissionInfo>>(permissions);
 
             return new ListResult<GetAllPermissionInfo>(mappedPermissions);
         }

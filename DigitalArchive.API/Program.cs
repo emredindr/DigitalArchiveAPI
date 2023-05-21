@@ -57,6 +57,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //            AllowCredentials()
 //            );
 //});
+
 //builder.Services.AddCors(opt =>
 //{
 //    opt.AddPolicy(corsName,
@@ -111,7 +112,7 @@ builder.Services.AddSwaggerGen(swagger =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -129,7 +130,9 @@ app.UseAuthorization();
 
 //Burası geliştirilecek Cors için izin verilecek adresler configden oluşturulacak
 
-app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(
+  //options => options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader()
+  options => options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
 app.UseHttpsRedirection();
 

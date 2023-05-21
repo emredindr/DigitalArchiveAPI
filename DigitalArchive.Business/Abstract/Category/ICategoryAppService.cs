@@ -5,6 +5,7 @@ namespace DigitalArchive.Business.Abstract
     public interface ICategoryAppService
     {
         Task<ListResult<GetAllCategoryInfo>> GetCategoryList(GetCategoryListInput input);
+        Task<ListResult<GetAllCategoryByGroup>> GetCategoryListByGroup();
         Task<PagedResult<GetAllCategoryInfo>> GetAllCategoryByPage(GetAllCategoryInput input);
         Task<GetAllCategoryInfo> GetCategoryById(int categoryId);
         Task CreateCategory(CreateCategoryInput input);

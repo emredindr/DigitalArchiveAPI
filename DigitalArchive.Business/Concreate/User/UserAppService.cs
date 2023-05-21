@@ -133,6 +133,7 @@ namespace DigitalArchive.Business.Concreate
         public async Task CreateUser(CreateUserInput createUserInput)
         {
             var newUser = Mapper.Map<User>(createUserInput);
+            newUser.Password = "asd123";
             newUser.IsActive = false;
 
             await _userRepository.InsertAsync(newUser);

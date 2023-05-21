@@ -27,6 +27,8 @@ namespace DigitalArchive.Business.Mappings.AutoMapper.Profiles
             CreateMap<Category, GetAllCategoryInfo>().ReverseMap();
             CreateMap<Category, CreateCategoryInput>().ReverseMap();
             CreateMap<Category, UpdateCategoryInput>().ReverseMap();
+            CreateMap<Category, GetAllCategoryByGroup>().ReverseMap();
+
             //CategoryType
             CreateMap<CategoryType, GetAllCategoryTypeInfo>().ReverseMap();
             CreateMap<CategoryType, CreateCategoryTypeInput>().ReverseMap();
@@ -35,6 +37,7 @@ namespace DigitalArchive.Business.Mappings.AutoMapper.Profiles
             CreateMap<Permission, GetAllPermissionInfo>().ReverseMap();
             CreateMap<Permission, CreatePermissionInput>().ReverseMap();
             CreateMap<Permission, UpdatePermissionInput>().ReverseMap();
+            
 
             //UserDocument
             CreateMap<User, DocumentUserInfo>().ForMember(k=>k.UserId,opt=>opt.MapFrom(a=>a.Id)).ReverseMap();

@@ -9,17 +9,7 @@ namespace DigitalArchive.DataAccess
     {
         public static void AddDbConnectionServices(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(option => option.UseNpgsql("Server=archivedb.postgres.database.azure.com; Port=5432; Database=ArchiveDb; UserId=emredindr@archivedb; Password=5m#C!502rR5Nn%6tgj8o;"));
+            services.AddDbContext<AppDbContext>(option => option.UseNpgsql("User ID=postgres;Password=archive4277.;Host=localhost;Port=5432;Database=ArchiveDb;"));
         }
-        //static public string ConnectionString
-        //{
-        //    get
-        //    {
-        //        ConfigurationManager configurationManager = new();
-        //        configurationManager.SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../DigitalArchive.API"));
-        //        configurationManager.AddJsonFile("appsettings.json");
-        //        return configurationManager.GetConnectionString("PostgreSQL");
-        //    }
-        //}
     }
 }

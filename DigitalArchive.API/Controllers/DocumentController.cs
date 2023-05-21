@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Blobs;
 using DigitalArchive.Business.Abstract;
+using Firebase.Storage;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Net.Http.Headers;
 
 namespace DigitalArchive.API.Controllers
@@ -57,16 +59,16 @@ namespace DigitalArchive.API.Controllers
 
         [HttpPost("UploadDocumentToAzure")]
         public async Task<IActionResult> UploadDocumentToAzure()
-       {
-            BlobContainerClient container = new (_storageConnectionString, _storageContainerName);
+        {
+            BlobContainerClient container = new(_storageConnectionString, _storageContainerName);
             Random random = new Random();
             var asd = random.Next(101, 1000);
             try
             {
                 //var formCollection = await Request.ReadFormAsync();
-                
+
                 //var file = formCollection.Files[0];
-                
+
                 var file = Request.Form.Files[0];
 
                 if (file == null)
@@ -87,6 +89,50 @@ namespace DigitalArchive.API.Controllers
                 BlobClient blob = container.GetBlobClient(newFileName);
 
                 await blob.UploadAsync(file.OpenReadStream());
+
+                var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType);
+
+                return Ok(new UploadedDocumentInfo
+                {
+                    DocumentId = recordDocumentId,
+                    DocumentName = newFileName,
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("UploadDocumentToFirebaseStorage")]
+        public async Task<IActionResult> UploadDocumentToFirebaseStorage()
+        {
+            Random random = new Random();
+            var asd = random.Next(101, 1000);
+            try
+            {
+                var file = Request.Form.Files[0];
+
+                if (file == null)
+                {
+                    return BadRequest();
+                }
+
+                string fileExtension = Path.GetExtension(file.FileName);
+
+                string result = file.FileName.Substring(0, file.FileName.Length - fileExtension.Length);
+
+                string fileName = result + "-" + asd.ToString();
+
+
+                string newFileName = string.Join(string.Empty, fileName, fileExtension);
+
+                var stream = file.OpenReadStream();
+
+                var task = new FirebaseStorage("archive-ed.appspot.com", new FirebaseStorageOptions
+                {
+                    ThrowOnCancel = true
+                }).Child("archive").Child(newFileName).PutAsync(stream);
 
                 var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType);
 

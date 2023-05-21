@@ -8,7 +8,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
 
     public class CategoryController : BaseController
     {
@@ -33,6 +33,12 @@ namespace DigitalArchive.API.Controllers
         public async Task<PagedResult<GetAllCategoryInfo>> GetAllCategoryByPage([FromQuery] GetAllCategoryInput input)
         {
             return await _categoryAppService.GetAllCategoryByPage(input);
+        }
+        
+        [HttpGet("GetCategoryListByGroup")]
+        public async Task<ListResult<GetAllCategoryByGroup>> GetCategoryListByGroup()
+        {
+            return await _categoryAppService.GetCategoryListByGroup();
         }
 
         [HttpPost("CreateCategory")]

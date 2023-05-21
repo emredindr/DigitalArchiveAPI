@@ -1,5 +1,4 @@
 ﻿using DigitalArchive.Business.Abstract;
-using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Entities.ViewModels.UserVM;
 using Microsoft.AspNetCore.Authorization;

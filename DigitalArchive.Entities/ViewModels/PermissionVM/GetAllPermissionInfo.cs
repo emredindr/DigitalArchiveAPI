@@ -7,7 +7,7 @@
         public string Description { get; set; }
         public int PermissionGroupId { get; set; }
         public string PermissionGroupName { get; set; }
-
+        public string PermissionGroupDescription { get; set; }
 
     }
 }
