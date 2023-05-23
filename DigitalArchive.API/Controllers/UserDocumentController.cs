@@ -23,6 +23,12 @@ namespace DigitalArchive.API.Controllers
         {
             return await _userDocumentAppService.GetAllUserDocumentByPage(input);
         }
+        
+        [HttpGet("GetAllUserDocumentList")]
+        public async Task<ListResult<GetAllUserDocumentInfo>> GetAllUserDocumentList([FromQuery] GetAllUserDocumentInput input)
+        {
+            return await _userDocumentAppService.GetAllUserDocumentList(input);
+        }
 
         [HttpGet("GetUserDocumentById")]
         public async Task<GetAllUserDocumentInfo> GetUserDocumentById(int userDocumentId)

@@ -31,9 +31,9 @@ namespace DigitalArchive.API.Controllers
         }
 
         [HttpGet("GetUserList")]
-        public async Task<ListResult<GetAllUserInfo>> GetUserList()
+        public async Task<ListResult<GetAllUserInfo>> GetUserList([FromQuery] GetAllUserInput input)
         {
-            return await _userAppService.GetUserList();
+            return await _userAppService.GetUserList(input);
         }
 
         [HttpGet("GetAllUsersByPage")]

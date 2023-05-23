@@ -68,12 +68,22 @@ namespace DigitalArchive.Business.Concreate
             return mappedUser;
         }
 
-        public async Task<ListResult<GetAllUserInfo>> GetUserList()
+        public async Task<ListResult<GetAllUserInfo>> GetUserList(GetAllUserInput input)
         {
-            var query = await _userRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
-            var newUsers = Mapper.Map<List<GetAllUserInfo>>(query);
+            var query = _userRepository.GetAll().Where(x => !x.IsDeleted);
 
-            return new ListResult<GetAllUserInfo>(newUsers);
+            query = query.WhereIf(input.IsActive == UserStatusEnum.Active, x => x.IsActive)
+                         .WhereIf(input.IsActive == UserStatusEnum.Passive, x => !x.IsActive)
+                         .WhereIf(!string.IsNullOrEmpty(input.SearchText), x => x.UserName.Contains(input.SearchText) || x.Email.Contains(input.SearchText));
+
+            var totalUserCount = await query.CountAsync();
+
+            var users = query.PageBy(input.SkipCount, input.MaxResultCount).ToList();
+           
+            var newUsers = Mapper.Map<List<GetAllUserInfo>>(users);
+        
+            return new ListResult<GetAllUserInfo>( newUsers);
+
         }
 
         [AuthorizeAspect(new string[] { AllPermissions.Administration_User_List })]

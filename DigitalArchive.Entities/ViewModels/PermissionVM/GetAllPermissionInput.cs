@@ -2,7 +2,7 @@
 
 namespace DigitalArchive.Entities.ViewModels.PermissionVM
 {
-    public class GetAllPermissionInput: PagedResultReguest
+    public class GetAllPermissionInput: ListResultReguest
     {
         public string? SearchText { get; set; }
     }

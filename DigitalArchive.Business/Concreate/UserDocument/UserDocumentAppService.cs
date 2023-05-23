@@ -86,6 +86,49 @@ namespace DigitalArchive.Business.Concreate
             return new PagedResult<GetAllUserDocumentInfo>(totalCategoryCount, categories);
         }
         
+        public async Task<ListResult<GetAllUserDocumentInfo>> GetAllUserDocumentList(GetAllUserDocumentInput input)
+        {
+            var currentUserId = _userManager.GetCurrentUserId();
+            var categoryPermissionCheck = await _userCategoryAppService.GetUserCategories(currentUserId, input.CategoryId ?? 0);
+
+            if (categoryPermissionCheck == null)
+            {
+                throw new Exception("bu kategoriyi görme yetkiniz yoktur.");
+            }
+
+            var categoryIds = await GetParentCategoryIds(input.CategoryId);
+
+            var query = from userDocument in _userDocumentRepository.GetAll()
+                        join user in _userRepository.GetAll() on userDocument.UserId equals user.Id
+                        join category in _categoryRepository.GetAll() on userDocument.CategoryId equals category.Id
+                        join categoryType in _categoryTypeRepository.GetAll() on category.CategoryTypeId equals categoryType.Id
+                        join document in _documentRepository.GetAll() on userDocument.DocumentId equals document.Id
+                        where !userDocument.IsDeleted && !user.IsDeleted && !category.IsDeleted && !categoryType.IsDeleted
+                        && !document.IsDeleted
+                        select new { userDocument, user, category, categoryType, document };
+
+            query = query.WhereIf(!string.IsNullOrEmpty(input.SearchText), x => x.document.Name.Contains(input.SearchText))
+                         .WhereIf(input.UserId.HasValue, x => x.userDocument.UserId == input.UserId)
+                         .WhereIf(categoryIds.Any(), x => categoryIds.Contains(x.category.Id));
+
+
+            var totalCategoryCount = await query.CountAsync();
+
+            var categories = await query.PageBy(input.SkipCount, input.MaxResultCount)
+                .Select(x => new GetAllUserDocumentInfo
+                {
+                    DocumentUser = Mapper.Map<DocumentUserInfo>(x.user),
+                    DocumentCategory = Mapper.Map<DocumentCategoryInfo>(x.category),
+                    DocumentInfo = Mapper.Map<DocumentInfo>(x.document),
+                    DocumentCategoryType = Mapper.Map<DocumentCategoryTypeInfo>(x.categoryType),
+                    DocumentTitle = x.userDocument.DocumentTitle,
+                    CreationTime = x.userDocument.CreationTime,
+                    UserDocumentId = x.userDocument.Id,
+
+                }).ToListAsync();
+
+            return new ListResult<GetAllUserDocumentInfo>(categories);
+        }
         public async Task<GetAllUserDocumentInfo> GetUserDocumentById(int userDocumentId)
         {
             var query = from userDocument in _userDocumentRepository.GetAll()

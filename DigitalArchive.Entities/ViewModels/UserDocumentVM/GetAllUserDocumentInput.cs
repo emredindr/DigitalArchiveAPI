@@ -2,7 +2,7 @@
 
 namespace DigitalArchive.Entities.ViewModels.UserDocumentVM
 {
-    public class GetAllUserDocumentInput: PagedResultReguest
+    public class GetAllUserDocumentInput: ListResultReguest
     {
         public string SearchText { get; set; }
         public int? CategoryId { get; set; }

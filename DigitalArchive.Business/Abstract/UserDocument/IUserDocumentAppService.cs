@@ -6,7 +6,7 @@ namespace DigitalArchive.Business.Abstract
     public interface IUserDocumentAppService
     {
         Task<PagedResult<GetAllUserDocumentInfo>> GetAllUserDocumentByPage(GetAllUserDocumentInput input);
-        //Task<ListResult<GetAllUserDocumentInfo>> GetUserDocumentList();
+        Task<ListResult<GetAllUserDocumentInfo>> GetAllUserDocumentList(GetAllUserDocumentInput input);
         Task<GetAllUserDocumentInfo> GetUserDocumentById(int userDocumentId);
         Task CreateUserDocument(CreateUserDocumentInput input);
         Task UpdateUserDocument(UpdateUserDocumentInput input);

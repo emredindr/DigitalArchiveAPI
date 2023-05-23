@@ -9,11 +9,10 @@ namespace DigitalArchive.Business.Abstract
     {
         Task<GetAllUserInfo> GetUserById(int userId);
         Task<PagedResult<GetAllUserInfo>> GetAllUsersByPage(GetAllUserInput input);
-        Task<ListResult<GetAllUserInfo>> GetUserList();
+        Task<ListResult<GetAllUserInfo>> GetUserList(GetAllUserInput input);
         Task<UserLoginOutput> Login(UserLoginInput input);
         Task CreateUser(CreateUserInput input);
         Task UpdateUser(UpdateUserInput input);
         Task DeleteUser(int userId);
-        
     }
 }
