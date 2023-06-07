@@ -9,5 +9,8 @@
     public class CreateUserPermissionInput
     {
         public int PermissionId { get; set; }
+        public bool IsChecked { get; set; }
+        public string PermissionName { get; set; }
+
     }
 }

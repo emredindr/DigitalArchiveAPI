@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Utilities.Interceptors;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
@@ -23,7 +24,7 @@ namespace DigitalArchive.Core.Aspects.AutoFac.Authorize
                 if (userPermissions.Contains(permission))
                     return;
 
-            throw new Exception("Bu işlem için yetkiniz bulunmamaktadır");
+            throw new ApiException("Bu işlem için yetkiniz bulunmamaktadır");
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using DigitalArchive.Business.Abstract;
+using DigitalArchive.Core.Aspects.AutoFac.Authorize;
+using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.UserCategoryVM;
 using Microsoft.EntityFrameworkCore;
@@ -11,29 +14,28 @@ public class UserCategoryAppService : BaseAppService, IUserCategoryAppService
 {
     private readonly IRepository<User, int> _userRepository;
     private readonly IRepository<Category, int> _categoryRepository;
-    private readonly IRepository<CategoryType, int> _categoryTypeRepository;
     private readonly IRepository<UserCategory, int> _userCategoryRepository;
 
     public UserCategoryAppService
         (
         IRepository<User, int> userRepository,
         IRepository<Category, int> categoryRepository,
-        IRepository<CategoryType, int> categoryTypeRepository,
         IRepository<UserCategory, int> userCategoryRepository
         )
     {
         _userRepository = userRepository;
         _categoryRepository = categoryRepository;
-        _categoryTypeRepository = categoryTypeRepository;
         _userCategoryRepository = userCategoryRepository;
     }
 
+
+    [AuthorizeAspect(new string[] { AllPermissions.UserCategory_CreateOrUpdate })]
     public async Task CreateOrUpdateUserCategory(CreateOrUpdateUserCategoryInput input)
     {
         var checkUser = await _userRepository.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == input.UserId);
         if (checkUser == null)
         {
-            throw new Exception("user bulunamadı ");
+            throw new ApiException("Kullanıcı bulunamadı !");
         }
         var userCategoryList = _userCategoryRepository.GetAllList(x => x.UserId == input.UserId);
         var userCategoryIdList = userCategoryList.Select(x => x.CategoryId).ToList();
@@ -60,7 +62,6 @@ public class UserCategoryAppService : BaseAppService, IUserCategoryAppService
             var query = _userCategoryRepository.FirstOrDefault(x => x.CategoryId == deleteItemId && x.UserId == input.UserId);
             await _userCategoryRepository.RemoveAsync(query.Id);
         }
-
     }
 
     public async Task<ListResult<CategoryAndUserInfo>> GetCategoryAndUserList(int userId)
@@ -68,13 +69,14 @@ public class UserCategoryAppService : BaseAppService, IUserCategoryAppService
         var checkUser = _userRepository.FirstOrDefault(x => !x.IsDeleted && x.Id == userId);
         if (checkUser == null)
         {
-            throw new Exception("user bulunamadı");
+            throw new ApiException("user bulunamadı");
         }
 
         List<CategoryAndUserInfo> result = new List<CategoryAndUserInfo>();
 
-        var userCategoryList = await _userCategoryRepository.GetAll().Where(x => x.UserId == userId).ToListAsync();
-        var allCategoryList = await _categoryRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
+        var userCategoryList = await _userCategoryRepository.GetAll().Where(x => x.UserId == userId).OrderBy(x => x.CategoryId).ThenBy(x => x.CategoryId).ToListAsync();
+
+        var allCategoryList = await _categoryRepository.GetAll().Where(x => !x.IsDeleted).OrderBy(x => x.Id).ThenBy(x => x.Id).ToListAsync();
         foreach (var item in allCategoryList)
         {
             var userCategoryCheck = userCategoryList.Any(x => x.CategoryId == item.Id);

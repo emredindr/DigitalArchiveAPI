@@ -6,6 +6,7 @@ namespace DigitalArchive.Business.Abstract
 {
     public interface IUserPermissionAppService
     {
+        Task<ListResult<PermissionAndUserInfo>> GetUserPermissionList(int userId);
         Task<List<Permission>> GetUserPermissions(int userId);
         Task<ListResult<GetPermissionGroupAndPermissionList>> GetPermissionGroupAndPermission(int userId);
 

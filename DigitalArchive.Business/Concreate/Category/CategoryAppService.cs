@@ -6,6 +6,7 @@ using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.CategoryVM;
 using Microsoft.EntityFrameworkCore;
@@ -76,13 +77,13 @@ namespace DigitalArchive.Business.Concreate
             var category = await _categoryRepository.FirstOrDefaultAsync(x => x.Id == categoryId && !x.IsDeleted);
             if (category == null)
             {
-                throw new Exception($"{categoryId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{categoryId} nolu Id degeri bulunamadı");
             }
             var mappedCategory = Mapper.Map<GetAllCategoryInfo>(category);
             return mappedCategory;
         }
 
-        [AuthorizeAspect(new string[] { AllPermissions.Category_List })]
+        //[AuthorizeAspect(new string[] { AllPermissions.Category_List })]
         public async Task<PagedResult<GetAllCategoryInfo>> GetAllCategoryByPage(GetAllCategoryInput input)
         {
             var query = from category in _categoryRepository.GetAll()
@@ -115,7 +116,7 @@ namespace DigitalArchive.Business.Concreate
             var category = await _categoryRepository.FirstOrDefaultAsync(x => x.Name == input.Name && x.CategoryTypeId == input.CategoryTypeId && x.IsDeleted == false);
             if (category != null)
             {
-                throw new Exception("Hata! Aynı kategory ismine aynı kategori tipi zaten var");
+                throw new ApiException("Hata! Aynı kategory ismine aynı kategori tipi zaten var");
             }
             var newCategories = Mapper.Map<Category>(input);
             await _categoryRepository.InsertAsync(newCategories);
@@ -129,7 +130,7 @@ namespace DigitalArchive.Business.Concreate
             var checkCategory = await _categoryRepository.GetAsync(input.Id);
             if (checkCategory == null)
             {
-                throw new Exception($"{input.Id} nolu Id degeri bulunamadı");
+                throw new ApiException($"{input.Id} nolu Id degeri bulunamadı");
             }
 
             var category = await _categoryRepository.FirstOrDefaultAsync(x => x.Name == input.Name && x.CategoryTypeId == input.CategoryTypeId && x.IsDeleted == false);
@@ -137,7 +138,7 @@ namespace DigitalArchive.Business.Concreate
             {
                 if (category.Id != checkCategory.Id)
                 {
-                    throw new Exception("Aynı isimle aktif categori oldugu icin guncellenemedi. ");
+                    throw new ApiException("Aynı isimle aktif categori oldugu icin guncellenemedi. ");
                 }
             }
             //checkUser.Name = updateUserInput.Name;
@@ -154,7 +155,7 @@ namespace DigitalArchive.Business.Concreate
             var checkCategory = await _categoryRepository.GetAsync(id);
             if (checkCategory == null)
             {
-                throw new Exception($"{id} nolu Id degeri bulunamadı");
+                throw new ApiException($"{id} nolu Id degeri bulunamadı");
             }
             checkCategory.IsDeleted = true;
             await _categoryRepository.UpdateAsync(checkCategory);

@@ -1,5 +1,7 @@
 ﻿using DigitalArchive.Business.Abstract;
+using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
+using DigitalArchive.Entities.ViewModels.PermissionVM;
 using DigitalArchive.Entities.ViewModels.UserPermissionVM;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +15,13 @@ namespace DigitalArchive.API.Controllers
         private readonly IUserPermissionAppService _userPermissionAppService;
         public UserPermissionController(IUserPermissionAppService userPermissionAppService)
         {
-            _userPermissionAppService=userPermissionAppService;
+            _userPermissionAppService = userPermissionAppService;
+        }
+
+        [HttpGet("GetUserPermissionList")]
+        public async Task<ListResult<PermissionAndUserInfo>> GetUserPermissionList(int userId)
+        {
+            return await _userPermissionAppService.GetUserPermissionList(userId);
         }
 
         [HttpGet("GetPermissionGroupAndPermission")]

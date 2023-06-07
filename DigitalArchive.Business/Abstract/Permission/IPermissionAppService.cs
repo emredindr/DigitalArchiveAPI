@@ -7,6 +7,7 @@ namespace DigitalArchive.Business.Abstract
     {
         Task<PagedResult<GetAllPermissionInfo>> GetAllPermissionByPage(GetAllPermissionInput input);
         Task<ListResult<GetAllPermissionInfo>> GetPermissionList();
+        Task<ListResult<GetAllPermissionInfoByGroup>> GetPermissionListByGroup();
         Task<GetAllPermissionInfo> GetPermissionById(int permissionId);
 
         Task CreatePermission(CreatePermissionInput input);

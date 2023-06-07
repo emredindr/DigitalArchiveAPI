@@ -4,6 +4,7 @@ using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.CategoryTypeVM;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +58,7 @@ namespace DigitalArchive.Business.Concreate
             var checkCategoryType = await _categoryTypeRepository.GetAsync(input.Id);
             if (checkCategoryType == null)
             {
-                throw new Exception($"{input.Id} nolu Id degeri bulunamadı");
+                throw new ApiException($"{input.Id} nolu Id degeri bulunamadı");
             }
             Mapper.Map(input, checkCategoryType);
             await _categoryTypeRepository.UpdateAsync(checkCategoryType);
@@ -69,7 +70,7 @@ namespace DigitalArchive.Business.Concreate
             var checkCategoryType = await _categoryTypeRepository.GetAsync(categoryTypeId);
             if (checkCategoryType == null)
             {
-                throw new Exception($"{categoryTypeId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{categoryTypeId} nolu Id degeri bulunamadı");
             }
             await _categoryTypeRepository.DeleteAsync(checkCategoryType.Id);
         }

@@ -8,7 +8,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class PermissionController : BaseController
     {
         private readonly IPermissionAppService _permissionAppService;
@@ -16,7 +16,7 @@ namespace DigitalArchive.API.Controllers
         {
             _permissionAppService = permissionAppService;
         }
-        
+
         [HttpGet("GetPermissionById")]
         public async Task<GetAllPermissionInfo> GetPermissionById(int permissionId)
         {
@@ -24,9 +24,15 @@ namespace DigitalArchive.API.Controllers
         }
 
         [HttpGet("GetPermissionList")]
-        public async Task<ListResult<GetAllPermissionInfo>> GetPermissionList() 
-        { 
+        public async Task<ListResult<GetAllPermissionInfo>> GetPermissionList()
+        {
             return await _permissionAppService.GetPermissionList();
+        }
+
+        [HttpGet("GetPermissionListByGroup")]
+        public async Task<ListResult<GetAllPermissionInfoByGroup>> GetPermissionListByGroup()
+        {
+            return await _permissionAppService.GetPermissionListByGroup();
         }
 
         [HttpGet("GetAllPermissionByPage")]

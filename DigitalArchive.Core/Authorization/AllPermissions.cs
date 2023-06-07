@@ -24,24 +24,24 @@
         public const string UserDocument_Delete = "UserDocument.Delete";
         //UserPermission
         public const string UserPermission_List = "UserPermission.List";
-        public const string UserPermission_Create = "UserPermission.Create";
-        public const string UserPermission_Update = "UserPermission.Update";
+        public const string UserPermission_CreateOrUpdate = "UserPermission.CreateOrUpdate";
         public const string UserPermission_Delete = "UserPermission.Delete";
         //Permission 
-        public const string Permission_List   = "Permission.List";
+        public const string Permission_List = "Permission.List";
         public const string Permission_Create = "Permission.Create";
         public const string Permission_Update = "Permission.Update";
         public const string Permission_Delete = "Permission.Delete";
         //PermissionGroup
-        public const string PermissionGroup_List   = "PermissionGroup.List";
+        public const string PermissionGroup_List = "PermissionGroup.List";
         public const string PermissionGroup_Create = "PermissionGroup.Create";
         public const string PermissionGroup_Update = "PermissionGroup.Update";
         public const string PermissionGroup_Delete = "PermissionGroup.Delete";
         //Document
-        public const string Document_List   = "Document.List";
+        public const string Document_List = "Document.List";
         public const string Document_Create = "Document.Create";
         public const string Document_Update = "Document.Update";
         public const string Document_Delete = "Document.Delete";
-
+        //UserCategory
+        public const string UserCategory_CreateOrUpdate = "UserCategory.CreateOrUpdate";
     }
 }

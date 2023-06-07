@@ -6,6 +6,7 @@ using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.PermissionGroupVM;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace DigitalArchive.Business.Concreate
             _permissionGroupRepository = permissionGroupRepository;
         }
         
-        [AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
+        //[AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
         public async Task<PagedResult<GetAllPermissionGroupInfo>> GetAllPermissionGroupByPage(GetAllPermissionGroupInput input)
         {
             var query = _permissionGroupRepository.GetAll().Where(x=>!x.IsDeleted);
@@ -42,13 +43,13 @@ namespace DigitalArchive.Business.Concreate
             var permissionGroup = await _permissionGroupRepository.FirstOrDefaultAsync(x => x.Id == permissionGroupId && !x.IsDeleted);
             if (permissionGroup == null)
             {
-                throw new Exception($"{permissionGroupId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{permissionGroupId} nolu Id degeri bulunamadı");
             }
             var mappedCategory = Mapper.Map<GetAllPermissionGroupInfo>(permissionGroup);
             return mappedCategory;
         }
 
-        [AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
+        //[AuthorizeAspect(new string[] { AllPermissions.PermissionGroup_List })]
         public async Task<ListResult<GetAllPermissionGroupInfo>> GetPermissionGroupList()
         {
             var query = await _permissionGroupRepository.GetAll().Where(x => !x.IsDeleted).ToListAsync();
@@ -74,7 +75,7 @@ namespace DigitalArchive.Business.Concreate
             var checkPermissionGroup = await _permissionGroupRepository.GetAsync(input.Id);
             if (checkPermissionGroup == null)
             {
-                throw new Exception($"{input.Id} nolu Id degeri bulunamadı");
+                throw new ApiException($"{input.Id} nolu Id degeri bulunamadı");
             }
             Mapper.Map(input, checkPermissionGroup);
             await _permissionGroupRepository.UpdateAsync(checkPermissionGroup);
@@ -86,7 +87,7 @@ namespace DigitalArchive.Business.Concreate
             var checkPermissionGroup = await _permissionGroupRepository.GetAsync(permissionGroupId);
             if (checkPermissionGroup == null)
             {
-                throw new Exception($"{permissionGroupId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{permissionGroupId} nolu Id degeri bulunamadı");
             }
             
             await _permissionGroupRepository.DeleteAsync(checkPermissionGroup.Id);

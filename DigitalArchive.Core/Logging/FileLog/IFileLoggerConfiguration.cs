@@ -2,7 +2,7 @@
 //{
 //    public interface IFileLoggerConfiguration
 //    {
-//        public string FileName { get;}
-//        public string FolderPath { get;}
+//        public string FileName { get; }
+//        public string FolderPath { get; }
 //    }
 //}

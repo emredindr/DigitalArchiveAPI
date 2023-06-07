@@ -1,6 +1,5 @@
 ﻿using DigitalArchive.DataAccess.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalArchive.DataAccess

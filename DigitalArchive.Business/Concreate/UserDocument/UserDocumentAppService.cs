@@ -6,6 +6,7 @@ using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.UserDocumentVM;
 using Microsoft.EntityFrameworkCore;
@@ -41,15 +42,15 @@ namespace DigitalArchive.Business.Concreate
             _userManager = userManager;
         }
 
-        [AuthorizeAspect(new string[] { AllPermissions.UserDocument_List })]
+        //[AuthorizeAspect(new string[] { AllPermissions.UserDocument_List })]
         public async Task<PagedResult<GetAllUserDocumentInfo>> GetAllUserDocumentByPage(GetAllUserDocumentInput input)
         {
             var currentUserId = _userManager.GetCurrentUserId();
             var categoryPermissionCheck = await _userCategoryAppService.GetUserCategories(currentUserId, input.CategoryId ?? 0);
 
-            if (categoryPermissionCheck == null)
+            if (categoryPermissionCheck.Count == 0 && input.CategoryId != null)
             {
-                throw new Exception("bu kategoriyi görme yetkiniz yoktur.");
+                throw new ApiException("Bu kategoriyi görme yetkiniz yoktur.");
             }
 
             var categoryIds = await GetParentCategoryIds(input.CategoryId);
@@ -85,15 +86,15 @@ namespace DigitalArchive.Business.Concreate
 
             return new PagedResult<GetAllUserDocumentInfo>(totalCategoryCount, categories);
         }
-        
+
         public async Task<ListResult<GetAllUserDocumentInfo>> GetAllUserDocumentList(GetAllUserDocumentInput input)
         {
             var currentUserId = _userManager.GetCurrentUserId();
             var categoryPermissionCheck = await _userCategoryAppService.GetUserCategories(currentUserId, input.CategoryId ?? 0);
 
-            if (categoryPermissionCheck == null)
+            if (categoryPermissionCheck.Count == 0 && input.CategoryId != null)
             {
-                throw new Exception("bu kategoriyi görme yetkiniz yoktur.");
+                throw new ApiException("Bu kategoriyi görme yetkiniz yoktur.");
             }
 
             var categoryIds = await GetParentCategoryIds(input.CategoryId);
@@ -143,7 +144,7 @@ namespace DigitalArchive.Business.Concreate
             var userDocumentInfo = await query.FirstOrDefaultAsync(x => x.userDocument.Id == userDocumentId);
             if (userDocumentInfo == null)
             {
-                throw new Exception("kayıt bulunamadı");
+                throw new ApiException("kayıt bulunamadı");
             }
 
             var mappedUserDocument = new GetAllUserDocumentInfo()
@@ -164,13 +165,13 @@ namespace DigitalArchive.Business.Concreate
         public async Task CreateUserDocument(CreateUserDocumentInput input)
         {
             var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == input.UserId);
-            if (user == null) throw new Exception($"{user.Id} nolu Id degeri bulunamadı");
+            if (user == null) throw new ApiException($"{user.Id} nolu Id degeri bulunamadı");
 
             var category = await _categoryRepository.FirstOrDefaultAsync(y => y.Id == input.CategoryId);
-            if (category == null) throw new Exception($"{category.Id} nolu Id degeri bulunamadı");
+            if (category == null) throw new ApiException($"{category.Id} nolu Id degeri bulunamadı");
 
             var document = await _documentRepository.FirstOrDefaultAsync(x => x.Id == input.DocumentId);
-            if (document == null) throw new Exception($"{document.Id} nolu Id degeri bulunamadı");
+            if (document == null) throw new ApiException($"{document.Id} nolu Id degeri bulunamadı");
 
 
             var newUserDocument = Mapper.Map<UserDocument>(input);
@@ -183,21 +184,21 @@ namespace DigitalArchive.Business.Concreate
         public async Task UpdateUserDocument(UpdateUserDocumentInput input)
         {
             var userDocument = await _userDocumentRepository.GetAsync(input.UserDocumentId);
-            if (userDocument == null) throw new Exception($"{userDocument.Id} nolu Id degeri bulunamadı");
+            if (userDocument == null) throw new ApiException($"{userDocument.Id} nolu Id degeri bulunamadı");
 
 
             var user = await _userRepository.FirstOrDefaultAsync(x => x.Id == input.UserId);
-            if (user == null) throw new Exception($"{user.Id} nolu Id degeri bulunamadı");
+            if (user == null) throw new ApiException($"{user.Id} nolu Id degeri bulunamadı");
 
             var category = await _categoryRepository.FirstOrDefaultAsync(y => y.Id == input.CategoryId);
-            if (category == null) throw new Exception($"{category.Id} nolu Id degeri bulunamadı");
+            if (category == null) throw new ApiException($"{category.Id} nolu Id degeri bulunamadı");
 
             var document = await _documentRepository.FirstOrDefaultAsync(x => x.Id == input.DocumentId);
-            if (document == null) throw new Exception($"{document.Id} nolu Id degeri bulunamadı");
+            if (document == null) throw new ApiException($"{document.Id} nolu Id degeri bulunamadı");
 
 
 
-            Mapper.Map(input,userDocument);
+            Mapper.Map(input, userDocument);
             await _userDocumentRepository.UpdateAsync(userDocument);
         }
 
@@ -207,13 +208,13 @@ namespace DigitalArchive.Business.Concreate
             var checkUserDocument = await _userDocumentRepository.GetAsync(userDocumentId);
             if (checkUserDocument == null)
             {
-                throw new Exception($"{userDocumentId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{userDocumentId} nolu Id degeri bulunamadı");
             }
             checkUserDocument.IsDeleted = true;
 
             await _userDocumentRepository.DeleteAsync(checkUserDocument.Id);
         }
-        
+
         private async Task<List<int>> GetParentCategoryIds(int? categoryId)
         {
             List<int> categoryIds = new List<int>();

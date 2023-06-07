@@ -6,6 +6,7 @@ using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
 using DigitalArchive.Core.Extensions.Linq;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Core.Utilities.Security.JWT;
 using DigitalArchive.Entities.Enums;
@@ -13,6 +14,7 @@ using DigitalArchive.Entities.UserVM;
 using DigitalArchive.Entities.ViewModels.UserVM;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 
 namespace DigitalArchive.Business.Concreate
 {
@@ -22,19 +24,23 @@ namespace DigitalArchive.Business.Concreate
         private readonly IRepository<User, int> _userRepository;
         private readonly IUserPermissionAppService _userPermissionAppService;
         private readonly ILogger<UserAppService> _logger;
+        private readonly IUserManager _userManager;
 
 
         public UserAppService(
             IJwtAuthenticationManager jwtAuthenticationManager,
             IRepository<User, int> userRepository,
             IUserPermissionAppService userPermissionAppService,
-            ILogger<UserAppService> logger
+            ILogger<UserAppService> logger,
+            IUserManager userManager
+
             )
         {
             _jwtAuthenticationManager = jwtAuthenticationManager;
             _userRepository = userRepository;
             _userPermissionAppService = userPermissionAppService;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [ValidationAspect(typeof(UserLoginInputValidator))]
@@ -42,10 +48,10 @@ namespace DigitalArchive.Business.Concreate
         {
             var userCheck = await _userRepository.GetAsync(x => x.Email == input.Email);
             if (userCheck == null)
-                throw new Exception($"{input.Email} mail adresine eş kayıt bulunamadı");
+                throw new ApiException($"{input.Email} mail adresine eş kayıt bulunamadı");
 
             if (userCheck.Password != input.Password)
-                throw new Exception("Hatalı parola");
+                throw new ApiException("Hatalı parola");
 
             var userPermissionList = await _userPermissionAppService.GetUserPermissions(userCheck.Id);
 
@@ -56,13 +62,25 @@ namespace DigitalArchive.Business.Concreate
             return mappedItem;
         }
 
+        public async Task<GetAllUserInfo> GetCurrentUserInfo()
+        {
+            var currentUserId =_userManager.GetCurrentUserId();
+
+            var user = await _userRepository.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == currentUserId);
+            if (user == null)
+            {
+                throw new ApiException($"{currentUserId} nolu Id degeri bulunamadı");
+            }
+            var mappedUser = Mapper.Map<GetAllUserInfo>(user);
+            return mappedUser;
+        }
 
         public async Task<GetAllUserInfo> GetUserById(int userId)
         {
             var user = await _userRepository.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == userId);
             if (user == null)
             {
-                throw new Exception($"{userId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{userId} nolu Id degeri bulunamadı");
             }
             var mappedUser = Mapper.Map<GetAllUserInfo>(user);
             return mappedUser;
@@ -79,14 +97,13 @@ namespace DigitalArchive.Business.Concreate
             var totalUserCount = await query.CountAsync();
 
             var users = query.PageBy(input.SkipCount, input.MaxResultCount).ToList();
-           
+
             var newUsers = Mapper.Map<List<GetAllUserInfo>>(users);
-        
-            return new ListResult<GetAllUserInfo>( newUsers);
+
+            return new ListResult<GetAllUserInfo>(newUsers);
 
         }
 
-        [AuthorizeAspect(new string[] { AllPermissions.Administration_User_List })]
         public async Task<PagedResult<GetAllUserInfo>> GetAllUsersByPage(GetAllUserInput input)
         {
             //var result = new GetAllUsersOutput();
@@ -157,10 +174,23 @@ namespace DigitalArchive.Business.Concreate
             var checkUser = await _userRepository.GetAsync(updateUserInput.Id);
             if (checkUser == null)
             {
-                throw new Exception($"{updateUserInput.Id} nolu Id degeri bulunamadı");
+                throw new ApiException($"{updateUserInput.Id} nolu Id degeri bulunamadı");
             }
             //checkUser.Name = updateUserInput.Name;
             //var user = Mapper.Map<User>(updateUserInput);
+            Mapper.Map(updateUserInput, checkUser);
+            await _userRepository.UpdateAsync(checkUser);
+        }
+
+        [ValidationAspect(typeof(UpdateUserInputValidator))]
+        public async Task UpdateCurrentUserInfo(UpdateUserInput updateUserInput)
+        {
+
+            var checkUser = await _userRepository.GetAsync(updateUserInput.Id);
+            if (checkUser == null)
+            {
+                throw new ApiException($"{updateUserInput.Id} nolu Id degeri bulunamadı");
+            }
             Mapper.Map(updateUserInput, checkUser);
             await _userRepository.UpdateAsync(checkUser);
         }
@@ -171,7 +201,7 @@ namespace DigitalArchive.Business.Concreate
             var checkUser = await _userRepository.GetAsync(userId);
             if (checkUser == null)
             {
-                throw new Exception($"{userId} nolu Id degeri bulunamadı");
+                throw new ApiException($"{userId} nolu Id degeri bulunamadı");
             }
             checkUser.IsDeleted = true;
 

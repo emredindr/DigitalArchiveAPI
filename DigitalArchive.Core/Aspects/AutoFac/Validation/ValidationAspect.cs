@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Utilities.Interceptors;
 using DigitalArchive.Core.Validation.FluentValidation;
 using FluentValidation;
@@ -12,7 +13,7 @@ namespace DigitalArchive.Core.Aspects.AutoFac.Validation
         public ValidationAspect(Type validatorType)
         {
             if (!typeof(IValidator).IsAssignableFrom(validatorType))
-                throw new Exception("AspectMessages.WrongValidationType");
+                throw new ApiException("AspectMessages.WrongValidationType");
 
             _validatorType = validatorType;
         }

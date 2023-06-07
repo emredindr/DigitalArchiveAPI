@@ -8,7 +8,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : BaseController
     {
 
@@ -28,6 +28,12 @@ namespace DigitalArchive.API.Controllers
         public async Task<GetAllUserInfo> GetUserById(int userId)
         {
             return await _userAppService.GetUserById(userId);
+        }
+
+        [HttpGet("GetCurrentUserInfo")]
+        public async Task<GetAllUserInfo> GetCurrentUserInfo()
+        {
+            return await _userAppService.GetCurrentUserInfo();
         }
 
         [HttpGet("GetUserList")]
@@ -54,10 +60,17 @@ namespace DigitalArchive.API.Controllers
         {
             await _userAppService.UpdateUser(updateUserInput);
         }
-        [HttpDelete("DeleteUser")]
-        public async Task DeleteUser(int id)
+
+        [HttpPost("UpdateCurrentUserInfo")]
+        public async Task UpdateCurrentUserInfo(UpdateUserInput updateUserInput)
         {
-            await _userAppService.DeleteUser(id);
+            await _userAppService.UpdateCurrentUserInfo(updateUserInput);
+        }
+
+        [HttpDelete("DeleteUser")]
+        public async Task DeleteUser(int userId)
+        {
+            await _userAppService.DeleteUser(userId);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using DigitalArchive.Business.Abstract;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DigitalArchive.API.Controllers
 {
-    //[Produces("application/json")]
     [Route("api/[controller]")]
     [ApiController]
 
@@ -134,7 +134,6 @@ namespace DigitalArchive.API.Controllers
                 string downloadUrl = await task;
 
                 var recordDocumentId = await _documentAppService.CreateAndGetDocumentIdFirebase(newFileName, file.ContentType,downloadUrl);
-                //var recordDocumentId = await _documentAppService.CreateAndGetDocumentId(newFileName, file.ContentType);
 
                 return Ok(new UploadedDocumentInfo
                 {
@@ -145,7 +144,7 @@ namespace DigitalArchive.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                throw new ApiException(ex);
             }
         }
         public class UploadedDocumentInfo

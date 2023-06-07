@@ -15,11 +15,13 @@ public class UserCategoryController : BaseController
     {
         _userCategoryAppService = userCategoryAppService;
     }
+    
     [HttpGet("GetCategoryTypeAndCategoryList")]
     public async Task<ListResult<CategoryAndUserInfo>> GetCategoryTypeAndCategoryList(int userId)
     {
         return await _userCategoryAppService.GetCategoryAndUserList(userId);
     }
+
     [HttpPost("CreateOrUpdateUserCategory")]
     public async Task CreateOrUpdateUserCategory(CreateOrUpdateUserCategoryInput input)
     {

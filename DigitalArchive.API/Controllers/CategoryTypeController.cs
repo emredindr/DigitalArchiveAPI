@@ -8,7 +8,7 @@ namespace DigitalArchive.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
 
     public class CategoryTypeController : BaseController
     {

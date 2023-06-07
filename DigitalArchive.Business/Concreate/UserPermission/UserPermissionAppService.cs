@@ -1,6 +1,9 @@
 ﻿using DigitalArchive.Business.Abstract;
+using DigitalArchive.Core.Aspects.AutoFac.Authorize;
+using DigitalArchive.Core.Authorization;
 using DigitalArchive.Core.DbModels;
 using DigitalArchive.Core.Dto.Response;
+using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
 using DigitalArchive.Core.Repositories;
 using DigitalArchive.Entities.ViewModels.UserPermissionVM;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +31,13 @@ namespace DigitalArchive.Business.Concreate
             _userRepository = userRepository;
         }
 
+        [AuthorizeAspect(new string[] { AllPermissions.UserPermission_CreateOrUpdate })]
         public async Task CreateOrUpdateUserPermission(CreateOrUpdateUserPermissionInput input)
         {
             var checkUser = await _userRepository.FirstOrDefaultAsync(x => !x.IsDeleted && x.Id == input.UserId);
             if (checkUser == null)
             {
-                throw new Exception("user bulunamadı ");
+                throw new ApiException("user bulunamadı ");
             }
 
             var userPermissionList = _userPermissionRepository.GetAllList(x => x.UserId == input.UserId);
@@ -62,13 +66,13 @@ namespace DigitalArchive.Business.Concreate
                 await _userPermissionRepository.RemoveAsync(query.Id);
             }
         }
-        
+
         public async Task<ListResult<GetPermissionGroupAndPermissionList>> GetPermissionGroupAndPermission(int userId)
         {
             var checkUser = _userRepository.FirstOrDefault(x => !x.IsDeleted && x.Id == userId);
             if (checkUser == null)
             {
-                throw new Exception("user bulunamadı ");
+                throw new ApiException("user bulunamadı ");
             }
 
             List<GetPermissionGroupAndPermissionList> result = new List<GetPermissionGroupAndPermissionList>();
@@ -96,7 +100,34 @@ namespace DigitalArchive.Business.Concreate
             }
             return new ListResult<GetPermissionGroupAndPermissionList>(result);
         }
-        
+
+        public async Task<ListResult<PermissionAndUserInfo>> GetUserPermissionList(int userId)
+        {
+            var checkUser = _userRepository.FirstOrDefault(x => !x.IsDeleted && x.Id == userId);
+            if (checkUser == null)
+            {
+                throw new ApiException("user bulunamadı ");
+            }
+
+            var result = new List<PermissionAndUserInfo>();
+            var userPermissionList = await _userPermissionRepository.GetAll().Where(x => x.UserId == userId).OrderBy(x => x.PermissionId).ThenBy(x => x.PermissionId).ToListAsync();
+
+            var permissionList = await _permissionRepository.GetAll().Where(x => !x.IsDeleted).OrderBy(x => x.Id).ThenBy(x => x.Id).ToListAsync();
+
+            foreach (var childItem in permissionList)
+            {
+                var userPermissionCheck = userPermissionList.Any(x => x.PermissionId == childItem.Id);
+                result.Add(new PermissionAndUserInfo
+                {
+                    PermissionId = childItem.Id,
+                    PermissionName = childItem.Name,
+                    IsChecked = userPermissionCheck,
+                });
+            }
+
+            return new ListResult<PermissionAndUserInfo>(result);
+        }
+
         public async Task<List<Permission>> GetUserPermissions(int userId)
         {
             var result = from permission in _permissionRepository.GetAll()

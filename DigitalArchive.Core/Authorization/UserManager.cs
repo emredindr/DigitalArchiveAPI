@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DigitalArchive.Core.Extensions.ResponseAndExceptionMiddleware;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace DigitalArchive.Core.Authorization
@@ -15,7 +16,7 @@ namespace DigitalArchive.Core.Authorization
         {
             var user = _httpContextAccessor.HttpContext.User?.Identity as ClaimsIdentity;
             if (user == null || !user.IsAuthenticated)
-                throw new Exception("Login olan aktif kullanıcı bilgisi bulunamadı");
+                throw new ApiException("Login olan aktif kullanıcı bilgisi bulunamadı");
             return user;
         }
 
